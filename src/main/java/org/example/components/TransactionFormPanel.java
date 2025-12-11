@@ -3,6 +3,8 @@ package org.example.components;
 import com.github.lgooddatepicker.components.DatePicker;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.models.DatabaseManager;
+import org.example.models.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +12,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -28,7 +33,8 @@ public class TransactionFormPanel {
             DatePicker datePicker,
             JTextField transactionThing,
             JTextField transactionAmount,
-            JTextField transactionDestinator
+            JTextField transactionDestinator,
+            JButton submit
     ) {
         // Instantiate form components
         this.panel = panel;
@@ -40,7 +46,7 @@ public class TransactionFormPanel {
         // Add panel title
         JLabel title = new JLabel("Add New Transaction:");
         title.setFont(new Font(title.getFont().getFontName(), Font.BOLD, 18));
-        panel.add(title, "wrap");
+        panel.add(title, "wrap, gapbottom 15");
 
         // Add transaction thing field
         panel.add(new JLabel("Transaction Thing:"), "wrap");
@@ -62,7 +68,37 @@ public class TransactionFormPanel {
         panel.add(transactionDestinator);
         panel.add(new JLabel("(From whom was it bought)"), "wrap");
 
+        submit.setText("Save Purchase");
+        submit.addActionListener(this::submitTransaction);
+        panel.add(submit, "gaptop 15");
+
         panel.setVisible(true);
+    }
+
+    private void submitTransaction(ActionEvent event) {
+        // Get data from fields
+        String thing = transactionThing.getText();
+        var amount = new BigDecimal(transactionAmount.getText());
+        LocalDate date = transactionDate.getDate();
+        String destinator = transactionDestinator.getText();
+
+        // Create Data entity objects
+        var transaction = new Transaction(
+                thing,
+                amount,
+                date,
+                destinator
+        );
+
+        var task = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                DatabaseManager.save(transaction);
+                return null;
+            }
+        };
+
+        task.execute();
     }
 
 }

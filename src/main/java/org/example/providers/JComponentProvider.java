@@ -30,7 +30,7 @@ public class JComponentProvider {
         return new JPanel(new MigLayout(
                 "insets 20",
                 "[grow, fill][shrink]",
-                "[]20[]5[]"
+                ""
         ));
     }
 
