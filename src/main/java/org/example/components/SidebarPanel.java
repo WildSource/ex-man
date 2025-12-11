@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,9 +17,14 @@ public class SidebarPanel {
     private JPanel panel;
     private TransactionFormPanel transactionFormPanel;
 
-    public SidebarPanel(TransactionFormPanel transactionFormPanel) {
-        panel = new JPanel();
+    @Inject
+    public SidebarPanel(
+            JPanel panel,
+            TransactionFormPanel transactionFormPanel
+    ) {
+        this.panel = panel;
         this.transactionFormPanel = transactionFormPanel;
+
         panel.add(transactionFormPanel.getPanel());
         panel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         panel.setVisible(true);

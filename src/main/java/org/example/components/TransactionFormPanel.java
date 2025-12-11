@@ -3,10 +3,11 @@ package org.example.components;
 import com.github.lgooddatepicker.components.DatePicker;
 import lombok.Getter;
 import lombok.Setter;
-import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.swing.*;
 import java.awt.*;
 
@@ -21,17 +22,20 @@ public class TransactionFormPanel {
     private DatePicker transactionDate;
     private JTextField transactionDestinator;
 
-    public  TransactionFormPanel() {
+    @Inject
+    public  TransactionFormPanel(
+            @Named("TFormMigPanel") JPanel panel,
+            DatePicker datePicker,
+            JTextField transactionThing,
+            JTextField transactionAmount,
+            JTextField transactionDestinator
+    ) {
         // Instantiate form components
-        panel = new JPanel(new MigLayout(
-                "insets 20",
-                "[grow, fill][shrink]",
-                "[]20[]5[]"
-        ));
-        transactionDate = new DatePicker();
-        transactionThing = new JTextField();
-        transactionAmount = new JTextField();
-        transactionDestinator = new JTextField();
+        this.panel = panel;
+        this.transactionDate = datePicker;
+        this.transactionThing = transactionThing;
+        this.transactionAmount = transactionAmount;
+        this.transactionDestinator = transactionDestinator;
 
         // Add panel title
         JLabel title = new JLabel("Add New Transaction:");

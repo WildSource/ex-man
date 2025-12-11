@@ -52,6 +52,12 @@
             <artifactId>LGoodDatePicker</artifactId>
             <version>11.2.1</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.codejargon.feather/feather -->
+        <dependency>
+            <groupId>org.codejargon.feather</groupId>
+            <artifactId>feather</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 </project>
