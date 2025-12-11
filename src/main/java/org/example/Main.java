@@ -2,6 +2,7 @@ package org.example;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import org.codejargon.feather.Feather;
+import org.example.components.Application;
 import org.example.models.DatabaseManager;
 import org.example.providers.JComponentProvider;
 
