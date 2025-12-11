@@ -3,9 +3,14 @@ package org.example.models;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 // Controls the database through its API
 public class DatabaseManager {
@@ -83,5 +88,29 @@ public class DatabaseManager {
                 }
             }
         }
+    }
+
+    public static List<Transaction> findAllTransactions() {
+        var queryAllCommand = "SELECT * FROM PURCHASE";
+        List<Transaction> transactions = new ArrayList<>();
+
+        try (var connexion = DriverManager.getConnection(URL)) {
+            var stmt = connexion.createStatement();
+            ResultSet transactionsRs = stmt.executeQuery(queryAllCommand);
+
+            while (transactionsRs.next()) {
+                transactions.add(
+                        new Transaction(
+                                transactionsRs.getString("ITEM"),
+                                new BigDecimal(transactionsRs.getInt("PRICE")),
+                                LocalDate.parse(transactionsRs.getString("DATE")),
+                                transactionsRs.getString("SELLER")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            logger.error("The database could not retrieve transactions", e);
+        }
+        return transactions;
     }
 }
