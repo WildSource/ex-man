@@ -11,22 +11,24 @@ import java.awt.*;
 
 @Getter
 @Setter
-public class SidebarPanel {
+public class SidebarPanel extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(SidebarPanel.class);
 
-    private JPanel panel;
+    private SplitPaneMediator mediator;
+
     private TransactionFormPanel transactionFormPanel;
 
     @Inject
-    public SidebarPanel(
-            JPanel panel,
-            TransactionFormPanel transactionFormPanel
-    ) {
-        this.panel = panel;
+    public SidebarPanel(TransactionFormPanel transactionFormPanel) {
         this.transactionFormPanel = transactionFormPanel;
 
-        panel.add(transactionFormPanel.getPanel());
-        panel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-        panel.setVisible(true);
+        add(transactionFormPanel);
+        setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        setVisible(true);
+    }
+
+    public void setMediator(SplitPaneMediator mediator) {
+        this.mediator = mediator;
+        transactionFormPanel.setMediator(mediator);
     }
 }
