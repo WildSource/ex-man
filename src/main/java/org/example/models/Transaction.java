@@ -12,9 +12,21 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
+
 public class Transaction {
     private String thing;
     private BigDecimal amount;
     private LocalDate date;
     private String destinator;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Transaction transaction) {
+            return getThing().equals(transaction.getThing()) &&
+                   getAmount().equals(transaction.getAmount()) &&
+                   getDate().equals(transaction.getDate()) &&
+                   getDestinator().equals(transaction.getDestinator());
+        }
+        return false;
+    }
 }

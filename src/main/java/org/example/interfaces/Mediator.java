@@ -1,7 +1,7 @@
 package org.example.interfaces;
 
-import javax.swing.*;
+import org.example.enums.MediatorEvent;
 
 public interface Mediator {
-    void notify(JComponent sender, String event);
+    void notify(MediatorEvent event);
 }

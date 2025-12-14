@@ -4,13 +4,13 @@ import com.github.lgooddatepicker.components.DatePicker;
 import lombok.Getter;
 import lombok.Setter;
 import net.miginfocom.swing.MigLayout;
+import org.example.enums.MediatorEvent;
 import org.example.models.DatabaseManager;
 import org.example.models.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -103,10 +103,14 @@ public class TransactionFormPanel extends JPanel {
                 DatabaseManager.save(transaction);
                 return null;
             }
+
+            @Override
+            protected void done() {
+                mediator.notify(MediatorEvent.ADD_TRANSACTION);
+            }
         };
 
         task.execute();
-        mediator.notify(this, "Saving Transactions");
     }
 
 }
