@@ -4,9 +4,10 @@ import com.github.lgooddatepicker.components.DatePicker;
 import lombok.Getter;
 import lombok.Setter;
 import net.miginfocom.swing.MigLayout;
-import org.example.enums.MediatorEvent;
+import org.example.mediators.purchase.PurchaseEvent;
+import org.example.mediators.internal.Mediator;
 import org.example.models.DatabaseManager;
-import org.example.models.Transaction;
+import org.example.models.Purchase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,7 @@ public class TransactionFormPanel extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(TransactionFormPanel.class);
 
     @Setter
-    private SplitPaneMediator mediator;
+    private Mediator mediator;
 
     private JTextField transactionThing;
     private JTextField transactionAmount;
@@ -56,12 +57,12 @@ public class TransactionFormPanel extends JPanel {
         add(title, "wrap, gapbottom 15");
 
         // Add transaction thing field
-        add(new JLabel("Transaction Thing:"), "wrap");
+        add(new JLabel("Transaction Item:"), "wrap");
         add(transactionThing);
         add(new JLabel("(What you bought)"), "wrap");
 
         // Add transaction amount field
-        add(new JLabel("Transaction Amount:"), "wrap");
+        add(new JLabel("Transaction Price:"), "wrap");
         add(transactionAmount);
         add(new JLabel("(CAD $)"), "wrap");
 
@@ -71,7 +72,7 @@ public class TransactionFormPanel extends JPanel {
         add(new JLabel("(yyyy-mm-dd)"), "wrap");
 
         // Add transaction destinator field
-        add(new JLabel("Transaction Destinator:"), "wrap");
+        add(new JLabel("Transaction Seller:"), "wrap");
         add(transactionDestinator);
         add(new JLabel("(From whom was it bought)"), "wrap");
 
@@ -84,20 +85,20 @@ public class TransactionFormPanel extends JPanel {
 
     private void submitTransaction(ActionEvent event) {
         // Get data from fields
-        String thing = transactionThing.getText();
-        var amount = new BigDecimal(transactionAmount.getText());
+        String item = transactionThing.getText();
+        var price = new BigDecimal(transactionAmount.getText());
         LocalDate date = transactionDate.getDate();
-        String destinator = transactionDestinator.getText();
+        String seller = transactionDestinator.getText();
 
         var task = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
                 // Create Data entity objects
-                var transaction = new Transaction(
-                        thing,
-                        amount,
+                var transaction = new Purchase(
+                        item,
+                        price,
                         date,
-                        destinator
+                        seller
                 );
 
                 DatabaseManager.save(transaction);
@@ -106,7 +107,7 @@ public class TransactionFormPanel extends JPanel {
 
             @Override
             protected void done() {
-                mediator.notify(MediatorEvent.ADD_TRANSACTION);
+                mediator.notify(PurchaseEvent.ADD_TRANSACTION);
 
                 // Clear form fields
                 transactionThing.setText("");

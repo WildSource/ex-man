@@ -2,6 +2,7 @@ package org.example.components;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.mediators.internal.Mediator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,12 +11,11 @@ import javax.swing.*;
 import java.awt.*;
 
 @Getter
-@Setter
 public class SidebarPanel extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(SidebarPanel.class);
 
-    private SplitPaneMediator mediator;
-
+    private Mediator mediator;
+    @Setter
     private TransactionFormPanel transactionFormPanel;
 
     @Inject
@@ -27,7 +27,7 @@ public class SidebarPanel extends JPanel {
         setVisible(true);
     }
 
-    public void setMediator(SplitPaneMediator mediator) {
+    public void setMediator(Mediator mediator) {
         this.mediator = mediator;
         transactionFormPanel.setMediator(mediator);
     }
