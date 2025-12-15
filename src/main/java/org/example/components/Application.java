@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.swing.*;
 
 public class Application extends JFrame {
@@ -12,7 +11,7 @@ public class Application extends JFrame {
     private final JSplitPane splitPane;
 
     @Inject
-    public Application(SplitPaneMediator splitPane) {
+    public Application(ApplicationSplitPane splitPane) {
         this.splitPane = splitPane;
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -4,7 +4,8 @@ import com.github.lgooddatepicker.components.DatePicker;
 import lombok.Getter;
 import lombok.Setter;
 import net.miginfocom.swing.MigLayout;
-import org.example.enums.MediatorEvent;
+import org.example.mediators.purchase.PurchaseEvent;
+import org.example.mediators.internal.Mediator;
 import org.example.models.DatabaseManager;
 import org.example.models.Purchase;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public class TransactionFormPanel extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(TransactionFormPanel.class);
 
     @Setter
-    private SplitPaneMediator mediator;
+    private Mediator mediator;
 
     private JTextField transactionThing;
     private JTextField transactionAmount;
@@ -106,7 +107,7 @@ public class TransactionFormPanel extends JPanel {
 
             @Override
             protected void done() {
-                mediator.notify(MediatorEvent.ADD_TRANSACTION);
+                mediator.notify(PurchaseEvent.ADD_TRANSACTION);
 
                 // Clear form fields
                 transactionThing.setText("");

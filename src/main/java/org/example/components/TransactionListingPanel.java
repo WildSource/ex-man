@@ -1,7 +1,6 @@
 package org.example.components;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.miginfocom.swing.MigLayout;
 import org.example.models.DatabaseManager;
 import org.example.models.Purchase;
@@ -15,15 +14,11 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Getter
-@Setter
 public class TransactionListingPanel extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(TransactionListingPanel.class);
 
-    @Setter
-    private SplitPaneMediator mediator;
-
-    private DefaultListModel<Purchase> observableTransactions;
-    private JList<Purchase> transactionsView;
+    private final DefaultListModel<Purchase> observableTransactions;
+    private final JList<Purchase> transactionsView;
 
     @Inject
     public TransactionListingPanel(
