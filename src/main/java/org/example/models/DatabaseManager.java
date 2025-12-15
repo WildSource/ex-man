@@ -45,7 +45,7 @@ public class DatabaseManager {
         }
     }
 
-    public static void save(Transaction transaction) {
+    public static void save(Purchase purchase) {
         Connection connexion = null;
         var insertCommand =
                 """
@@ -62,11 +62,11 @@ public class DatabaseManager {
             connexion.setAutoCommit(false);
 
             var pstmt = connexion.prepareStatement(insertCommand);
-            pstmt.setString(1, transaction.getThing());
+            pstmt.setString(1, purchase.getItem());
             // TODO make so that 12.99 is stored as 1299 in db
-            pstmt.setInt(2, transaction.getAmount().intValue());
-            pstmt.setString(3, transaction.getDate().toString());
-            pstmt.setString(4, transaction.getDestinator());
+            pstmt.setInt(2, purchase.getPrice().intValue());
+            pstmt.setString(3, purchase.getDate().toString());
+            pstmt.setString(4, purchase.getSeller());
             pstmt.execute();
 
             connexion.commit();
@@ -90,17 +90,17 @@ public class DatabaseManager {
         }
     }
 
-    public static List<Transaction> findAllTransactions() {
+    public static List<Purchase> findAllTransactions() {
         var queryAllCommand = "SELECT * FROM PURCHASE";
-        List<Transaction> transactions = new ArrayList<>();
+        List<Purchase> purchases = new ArrayList<>();
 
         try (var connexion = DriverManager.getConnection(URL)) {
             var stmt = connexion.createStatement();
             ResultSet transactionsRs = stmt.executeQuery(queryAllCommand);
 
             while (transactionsRs.next()) {
-                transactions.add(
-                        new Transaction(
+                purchases.add(
+                        new Purchase(
                                 transactionsRs.getString("ITEM"),
                                 new BigDecimal(transactionsRs.getInt("PRICE")),
                                 LocalDate.parse(transactionsRs.getString("DATE")),
@@ -111,6 +111,6 @@ public class DatabaseManager {
         } catch (SQLException e) {
             logger.error("The database could not retrieve transactions", e);
         }
-        return transactions;
+        return purchases;
     }
 }

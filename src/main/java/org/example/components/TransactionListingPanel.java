@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.miginfocom.swing.MigLayout;
 import org.example.models.DatabaseManager;
-import org.example.models.Transaction;
+import org.example.models.Purchase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,13 +22,13 @@ public class TransactionListingPanel extends JPanel {
     @Setter
     private SplitPaneMediator mediator;
 
-    private DefaultListModel<Transaction> observableTransactions;
-    private JList<Transaction> transactionsView;
+    private DefaultListModel<Purchase> observableTransactions;
+    private JList<Purchase> transactionsView;
 
     @Inject
     public TransactionListingPanel(
-            DefaultListModel<Transaction> observableTransactions,
-            JList<Transaction> transactionsView
+            DefaultListModel<Purchase> observableTransactions,
+            JList<Purchase> transactionsView
     ) {
         this.observableTransactions = observableTransactions;
         this.transactionsView = transactionsView;
@@ -47,9 +47,9 @@ public class TransactionListingPanel extends JPanel {
     }
 
     public void updateTransactionView() {
-        var sw = new SwingWorker<List<Transaction>, Void>() {
+        var sw = new SwingWorker<List<Purchase>, Void>() {
             @Override
-            protected List<Transaction> doInBackground() throws Exception {
+            protected List<Purchase> doInBackground() {
                 return DatabaseManager.findAllTransactions();
             }
 
@@ -58,14 +58,14 @@ public class TransactionListingPanel extends JPanel {
                 try {
                     // Change implementation
                     // In the future with a growing database this will not be viable
-                    List<Transaction> transactions = get();
+                    List<Purchase> purchases = get();
 
                     if (observableTransactions.isEmpty()) {
-                        observableTransactions.addAll(transactions);
+                        observableTransactions.addAll(purchases);
                     } else {
-                        transactions.forEach((transaction -> {
-                            if (!observableTransactions.contains(transaction)) {
-                                observableTransactions.addElement(transaction);
+                        purchases.forEach((purchase -> {
+                            if (!observableTransactions.contains(purchase)) {
+                                observableTransactions.addElement(purchase);
                             }
                         }));
                     }
