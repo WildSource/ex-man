@@ -107,10 +107,16 @@ public class TransactionFormPanel extends JPanel {
             @Override
             protected void done() {
                 mediator.notify(MediatorEvent.ADD_TRANSACTION);
+
+                // Clear form fields
+                transactionThing.setText("");
+                transactionAmount.setText("");
+                transactionDate.setDate(null);
+                transactionDate.setText("");
+                transactionDestinator.setText("");
             }
         };
 
         task.execute();
     }
-
 }
