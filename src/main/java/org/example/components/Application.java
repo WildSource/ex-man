@@ -13,6 +13,7 @@ public class Application extends JFrame {
     @Inject
     public Application(ApplicationSplitPane splitPane) {
         this.splitPane = splitPane;
+        splitPane.setFrame(this);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

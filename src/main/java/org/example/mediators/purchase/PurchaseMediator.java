@@ -8,6 +8,8 @@ import org.example.mediators.internal.MediatorEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+
 @NoArgsConstructor
 public class PurchaseMediator implements Mediator {
     private static final Logger logger = LoggerFactory.getLogger(PurchaseMediator.class);
