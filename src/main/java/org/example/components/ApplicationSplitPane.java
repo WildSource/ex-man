@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.swing.*;
+import java.awt.*;
 
 public class ApplicationSplitPane extends JSplitPane {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationSplitPane.class);
@@ -28,6 +29,13 @@ public class ApplicationSplitPane extends JSplitPane {
         this.purchaseMediator = purchaseMediator;
         this.sidebar = sidebar;
         this.transactionListing = transactionListing;
+
+        setDividerSize(20);
+        setDividerLocation(0.20);
+        // Make panes hideable
+        setOneTouchExpandable(true);
+        sidebar.setMinimumSize(new Dimension(0, 0));
+        transactionListing.setMinimumSize(new Dimension(0, 0));
 
         // Setup dependency of purchase mediator
         purchaseMediator.setTransactionListing(transactionListing);
