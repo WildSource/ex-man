@@ -2,20 +2,18 @@ package org.example.mediators.purchase;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.components.TransactionListingPanel;
+import org.example.components.PurchaseListing;
 import org.example.mediators.internal.Mediator;
 import org.example.mediators.internal.MediatorEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
 
 @NoArgsConstructor
 public class PurchaseMediator implements Mediator {
     private static final Logger logger = LoggerFactory.getLogger(PurchaseMediator.class);
 
     @Setter
-    private TransactionListingPanel transactionListing;
+    private PurchaseListing transactionListing;
 
     @Override
     public void notify(MediatorEvent event) {
