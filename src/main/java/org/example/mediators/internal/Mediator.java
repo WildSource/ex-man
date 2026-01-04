@@ -1,5 +1,5 @@
 package org.example.mediators.internal;
 
-public interface Mediator {
-    void notify(MediatorEvent event);
+public interface Mediator<T> {
+    void notify(MediatorEvent event, T data);
 }

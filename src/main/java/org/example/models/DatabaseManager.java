@@ -20,7 +20,6 @@ public class DatabaseManager {
     // Creates a db file if it does not exist
     // Setups the db
     public static void createDatabase() {
-        // TODO rename model (and their attributes) to match db table
         var createTransactionTable =
                 """
                 CREATE TABLE IF NOT EXISTS PURCHASE (
@@ -45,7 +44,7 @@ public class DatabaseManager {
         }
     }
 
-    public static void save(Purchase purchase) {
+    public static void savePurchase(Purchase purchase) {
         Connection connexion = null;
         var insertCommand =
                 """
@@ -89,8 +88,27 @@ public class DatabaseManager {
             }
         }
     }
+    
+    public static void deletePurchaseById(Long purchaseId) {
+        var deleteStatement =
+                """
+                DELETE FROM PURCHASE WHERE ID = ?
+                """;
 
-    public static List<Purchase> findAllTransactions() {
+        try (var conn = DriverManager.getConnection(URL);
+             var pstmt = conn.prepareStatement(deleteStatement)) {
+
+            pstmt.setLong(1, purchaseId);
+
+            // execute the delete statement
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            logger.error("Could not delete purchase with id: " + purchaseId);
+        }
+    }
+
+    public static List<Purchase> findAllPurchases() {
         var queryAllCommand = "SELECT * FROM PURCHASE";
         List<Purchase> purchases = new ArrayList<>();
 
@@ -101,6 +119,7 @@ public class DatabaseManager {
             while (transactionsRs.next()) {
                 purchases.add(
                         new Purchase(
+                                transactionsRs.getLong("ID"),
                                 transactionsRs.getString("ITEM"),
                                 new BigDecimal(transactionsRs.getInt("PRICE")),
                                 LocalDate.parse(transactionsRs.getString("DATE")),
