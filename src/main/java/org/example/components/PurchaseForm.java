@@ -1,44 +1,31 @@
 package org.example.components;
 
 import com.github.lgooddatepicker.components.DatePicker;
-import lombok.Getter;
-import lombok.Setter;
 import net.miginfocom.swing.MigLayout;
-import org.example.mediators.purchase.PurchaseEvent;
-import org.example.mediators.internal.Mediator;
 import org.example.models.DatabaseManager;
 import org.example.models.Purchase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Setter
-@Getter
-public class TransactionFormPanel extends JPanel {
-    private static final Logger logger = LoggerFactory.getLogger(TransactionFormPanel.class);
+public class PurchaseForm extends JPanel {
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseForm.class);
 
-    @Setter
-    private Mediator mediator;
+    private NavigationBar navbar;
 
     private JTextField transactionThing;
     private JTextField transactionAmount;
     private DatePicker transactionDate;
     private JTextField transactionDestinator;
+    private JButton submit;
 
-    @Inject
-    public  TransactionFormPanel(
-            DatePicker datePicker,
-            JTextField transactionThing,
-            JTextField transactionAmount,
-            JTextField transactionDestinator,
-            JButton submit
-    ) {
+    public PurchaseForm(NavigationBar navbar) {
+        this.navbar = navbar;
         setLayout(new MigLayout(
                 "insets 20",
                 "[grow, fill][shrink]",
@@ -46,10 +33,11 @@ public class TransactionFormPanel extends JPanel {
         ));
 
         // Instantiate form components
-        this.transactionDate = datePicker;
-        this.transactionThing = transactionThing;
-        this.transactionAmount = transactionAmount;
-        this.transactionDestinator = transactionDestinator;
+        this.transactionDate = new DatePicker();
+        this.transactionThing = new JTextField();
+        this.transactionAmount = new JTextField();
+        this.transactionDestinator = new JTextField();
+        this.submit = new JButton("Save Purchase");
 
         // Add panel title
         JLabel title = new JLabel("Add New Transaction:");
@@ -76,7 +64,6 @@ public class TransactionFormPanel extends JPanel {
         add(transactionDestinator);
         add(new JLabel("(From whom was it bought)"), "wrap");
 
-        submit.setText("Save Purchase");
         submit.addActionListener(this::submitTransaction);
         add(submit, "gaptop 15");
 
@@ -107,17 +94,18 @@ public class TransactionFormPanel extends JPanel {
 
             @Override
             protected void done() {
-                mediator.notify(PurchaseEvent.ADD_TRANSACTION);
-
                 // Clear form fields
                 transactionThing.setText("");
                 transactionAmount.setText("");
                 transactionDate.setDate(null);
                 transactionDate.setText("");
                 transactionDestinator.setText("");
+                PurchaseListing.updateTransactionView();
+                Application.adjust();
             }
         };
 
         task.execute();
+        navbar.showPurchases();
     }
 }
