@@ -1,6 +1,6 @@
 package org.example.components;
 
-import org.example.mediators.frame.FrameMediator;
+import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,28 +13,28 @@ public final class Application extends JFrame {
 
     private JPanel panel;
     private CardLayout cardLayout;
+    private NavigationBar navbar;
 
     private Application() {
-        cardLayout = new CardLayout();
+        this.cardLayout = new CardLayout();
         this.panel = new JPanel(cardLayout);
+        this.navbar = new NavigationBar(cardLayout, panel);
 
         panel.add(new PurchaseListing(), "read");
-        panel.add(new PurchaseForm(), "create");
+        panel.add(new PurchaseForm(navbar), "create");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new MigLayout());
         setLocationRelativeTo(null);
         setTitle("Ex-Man");
-        add(panel);
+        add(panel, "wrap");
+        add(navbar);
         pack();
         setVisible(true);
     }
 
-    public void showPurchases() {
-        cardLayout.show(panel, "read");
-    }
-
-    public void showPurchaseForm() {
-        cardLayout.show(panel, "create");
+    public static void adjust() {
+        getInstance().pack();
     }
 
     public static Application getInstance() {

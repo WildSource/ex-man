@@ -1,11 +1,7 @@
 package org.example.components;
 
 import com.github.lgooddatepicker.components.DatePicker;
-import lombok.Getter;
-import lombok.Setter;
 import net.miginfocom.swing.MigLayout;
-import org.example.mediators.purchase.PurchaseEvent;
-import org.example.mediators.internal.Mediator;
 import org.example.models.DatabaseManager;
 import org.example.models.Purchase;
 import org.slf4j.Logger;
@@ -17,13 +13,10 @@ import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Setter
-@Getter
 public class PurchaseForm extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(PurchaseForm.class);
 
-    @Setter
-    private Mediator mediator;
+    private NavigationBar navbar;
 
     private JTextField transactionThing;
     private JTextField transactionAmount;
@@ -31,8 +24,8 @@ public class PurchaseForm extends JPanel {
     private JTextField transactionDestinator;
     private JButton submit;
 
-    public PurchaseForm(
-    ) {
+    public PurchaseForm(NavigationBar navbar) {
+        this.navbar = navbar;
         setLayout(new MigLayout(
                 "insets 20",
                 "[grow, fill][shrink]",
@@ -101,17 +94,18 @@ public class PurchaseForm extends JPanel {
 
             @Override
             protected void done() {
-                mediator.notify(PurchaseEvent.ADD_TRANSACTION);
-
                 // Clear form fields
                 transactionThing.setText("");
                 transactionAmount.setText("");
                 transactionDate.setDate(null);
                 transactionDate.setText("");
                 transactionDestinator.setText("");
+                PurchaseListing.updateTransactionView();
+                Application.adjust();
             }
         };
 
         task.execute();
+        navbar.showPurchases();
     }
 }

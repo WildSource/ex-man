@@ -16,11 +16,10 @@ import java.util.concurrent.ExecutionException;
 public class PurchaseListing extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(PurchaseListing.class);
 
-    private final DefaultListModel<Purchase> observableTransactions;
+    private static final DefaultListModel<Purchase> observableTransactions = new DefaultListModel<>();
     private final JList<Purchase> transactionsView;
 
     public PurchaseListing() {
-        this.observableTransactions = new DefaultListModel<>();
         this.transactionsView = new JList<>();
 
         transactionsView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -36,7 +35,7 @@ public class PurchaseListing extends JPanel {
         setVisible(true);
     }
 
-    public void updateTransactionView() {
+    public static void updateTransactionView() {
         var sw = new SwingWorker<List<Purchase>, Void>() {
             @Override
             protected List<Purchase> doInBackground() {
@@ -59,6 +58,7 @@ public class PurchaseListing extends JPanel {
                             }
                         }));
                     }
+                    Application.adjust();
                 } catch (InterruptedException e) {
                     logger.error("Worker thread got interrupted while querying for transactions", e);
                 } catch (ExecutionException e) {
@@ -69,10 +69,5 @@ public class PurchaseListing extends JPanel {
         };
 
         sw.execute();
-
-        Window window = SwingUtilities.getWindowAncestor(this);
-        if (window != null) {
-            window.pack();
-        }
     }
 }
