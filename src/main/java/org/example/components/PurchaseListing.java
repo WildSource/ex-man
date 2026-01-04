@@ -61,11 +61,8 @@ public class PurchaseListing extends JPanel {
                     if (observableTransactions.isEmpty()) {
                         observableTransactions.addAll(purchases);
                     } else {
-                        purchases.forEach((purchase -> {
-                            if (!observableTransactions.contains(purchase)) {
-                                observableTransactions.addElement(purchase);
-                            }
-                        }));
+                        observableTransactions.clear();
+                        purchases.forEach((observableTransactions::addElement));
                     }
                     Application.adjust();
                 } catch (InterruptedException e) {
@@ -83,6 +80,11 @@ public class PurchaseListing extends JPanel {
     public void onSelectedPurchase(ListSelectionEvent listSelectionEvent) {
         // Confirms that it not in the middle of changing
         if (listSelectionEvent.getValueIsAdjusting()) {
+            return;
+        }
+
+        // Check if something is actually selected
+        if (transactionsView.getSelectedIndex() == -1) {
             return;
         }
 
