@@ -18,7 +18,7 @@ public final class Application extends JFrame {
     private Application() {
         this.cardLayout = new CardLayout();
         this.panel = new JPanel(cardLayout);
-        this.navbar = new NavigationBar(cardLayout, panel);
+        this.navbar = NavigationBar.getInstance(cardLayout, panel);
 
         panel.add(new PurchaseListing(), "read");
         panel.add(new PurchaseForm(navbar), "create");

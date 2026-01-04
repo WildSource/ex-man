@@ -88,7 +88,7 @@ public class PurchaseForm extends JPanel {
                         seller
                 );
 
-                DatabaseManager.save(transaction);
+                DatabaseManager.savePurchase(transaction);
                 return null;
             }
 

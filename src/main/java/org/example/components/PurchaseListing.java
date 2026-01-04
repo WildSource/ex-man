@@ -2,12 +2,15 @@ package org.example.components;
 
 import lombok.Getter;
 import net.miginfocom.swing.MigLayout;
+import org.example.mediators.navigationbar.NavigationBarMediator;
+import org.example.mediators.navigationbar.NavigationEvent;
 import org.example.models.DatabaseManager;
 import org.example.models.Purchase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -19,11 +22,17 @@ public class PurchaseListing extends JPanel {
     private static final DefaultListModel<Purchase> observableTransactions = new DefaultListModel<>();
     private final JList<Purchase> transactionsView;
 
+    @Getter
+    private static Long selectedPurchaseId;
+
     public PurchaseListing() {
+        selectedPurchaseId = -1L;
+
         this.transactionsView = new JList<>();
 
         transactionsView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         transactionsView.setModel(observableTransactions);
+        transactionsView.addListSelectionListener(this::onSelectedPurchase);
 
         setLayout(new MigLayout());
         setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -39,7 +48,7 @@ public class PurchaseListing extends JPanel {
         var sw = new SwingWorker<List<Purchase>, Void>() {
             @Override
             protected List<Purchase> doInBackground() {
-                return DatabaseManager.findAllTransactions();
+                return DatabaseManager.findAllPurchases();
             }
 
             @Override
@@ -69,5 +78,21 @@ public class PurchaseListing extends JPanel {
         };
 
         sw.execute();
+    }
+
+    public void onSelectedPurchase(ListSelectionEvent listSelectionEvent) {
+        // Confirms that it not in the middle of changing
+        if (listSelectionEvent.getValueIsAdjusting()) {
+            return;
+        }
+
+        // Set current selected id
+        selectedPurchaseId = transactionsView
+                .getModel()
+                .getElementAt(transactionsView.getSelectedIndex())
+                .getId();
+
+        // Enable delete button
+        NavigationBarMediator.getInstance().notify(NavigationEvent.PURCHASE_SELECTED, null);
     }
 }
