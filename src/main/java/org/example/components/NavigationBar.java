@@ -16,6 +16,8 @@ public final class NavigationBar extends JPanel {
     private JButton addPurchaseButton;
     private JButton showPurchasesButton;
     @Getter
+    private JButton editPurchaseButton;
+    @Getter
     private JButton deleteSelectedPurchaseButton;
 
     private NavigationBar(CardLayout cardLayout, JPanel panel) {
@@ -29,6 +31,10 @@ public final class NavigationBar extends JPanel {
         this.showPurchasesButton = new JButton("Show Purchases");
         showPurchasesButton.addActionListener((_) -> showPurchases());
         add(showPurchasesButton);
+
+        this.editPurchaseButton = new JButton("Edit Purchase");
+        editPurchaseButton.addActionListener((_) -> showEditPurchasePanel());
+        add(editPurchaseButton);
 
         this.deleteSelectedPurchaseButton = new JButton("Delete Purchase");
         deleteSelectedPurchaseButton.addActionListener((_) -> deleteSelectedPurchase());
@@ -48,6 +54,7 @@ public final class NavigationBar extends JPanel {
         cardLayout.show(panel, "read");
         addPurchaseButton.setEnabled(true);
         showPurchasesButton.setEnabled(false);
+        editPurchaseButton.setEnabled(false);
         deleteSelectedPurchaseButton.setEnabled(false);
     }
 
@@ -55,7 +62,16 @@ public final class NavigationBar extends JPanel {
         cardLayout.show(panel, "create");
         addPurchaseButton.setEnabled(false);
         showPurchasesButton.setEnabled(true);
+        editPurchaseButton.setEnabled(false);
         deleteSelectedPurchaseButton.setEnabled(false);
+    }
+
+    public void showEditPurchasePanel() {
+        cardLayout.show(panel, "edit");
+        addPurchaseButton.setEnabled(false);
+        showPurchasesButton.setEnabled(true);
+        deleteSelectedPurchaseButton.setEnabled(true);
+        editPurchaseButton.setEnabled(false);
     }
 
     public void deleteSelectedPurchase() {

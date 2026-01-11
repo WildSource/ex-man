@@ -22,6 +22,7 @@ public final class NavigationBarMediator implements Mediator<Void> {
 
     @Override
     public void notify(MediatorEvent event, Void data) {
+        navbar.getEditPurchaseButton().setEnabled(true);
         navbar.getDeleteSelectedPurchaseButton().setEnabled(true);
     }
 }

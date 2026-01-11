@@ -22,6 +22,7 @@ public final class Application extends JFrame {
 
         panel.add(new PurchaseListing(), "read");
         panel.add(new PurchaseForm(navbar), "create");
+        panel.add(new PurchaseEdit(navbar), "edit");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new MigLayout());
