@@ -88,6 +88,32 @@ public class DatabaseManager {
             }
         }
     }
+
+    public static void updatePurchaseById(Long id, Purchase purchaseDTO) {
+        var updateCommand =
+                """
+                UPDATE PURCHASE
+                SET ITEM = ?,
+                SET PRICE = ?,
+                SET DATE = ?,
+                SET SELLER = ?,
+                WHERE ID = ?
+                """;
+
+        try (var conn = DriverManager.getConnection(URL)) {
+            var pstmt = conn.prepareStatement(updateCommand);
+
+            pstmt.setString(1, purchaseDTO.getItem());
+            pstmt.setInt(2, purchaseDTO.getPrice().intValue());
+            pstmt.setString(3, purchaseDTO.getDate().toString());
+            pstmt.setString(4, purchaseDTO.getSeller());
+            pstmt.setLong(5, id);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Could not update purchase with id: " + id, e);
+        }
+    }
     
     public static void deletePurchaseById(Long purchaseId) {
         var deleteStatement =
@@ -106,6 +132,33 @@ public class DatabaseManager {
         } catch (SQLException e) {
             logger.error("Could not delete purchase with id: " + purchaseId);
         }
+    }
+
+    public static Purchase findPurchaseById(Long id) {
+        var queryCommand = "SELECT * FROM PURCHASE WHERE ID = ?";
+        Purchase purchase = null;
+
+        try (var conn = DriverManager.getConnection(URL)) {
+            var psmt = conn.prepareStatement(queryCommand);
+
+            psmt.setLong(1, id);
+
+            ResultSet rs = psmt.executeQuery();
+
+            rs.next();
+
+            purchase = new Purchase(
+                    rs.getLong("ID"),
+                    rs.getString("ITEM"),
+                    new BigDecimal(rs.getString("PRICE")),
+                    LocalDate.parse(rs.getString("DATE")),
+                    rs.getString("SELLER")
+            );
+        } catch (SQLException e) {
+            logger.error("The database could not retrieve purchase with id: " + id, e);
+        }
+
+        return purchase;
     }
 
     public static List<Purchase> findAllPurchases() {
@@ -128,7 +181,7 @@ public class DatabaseManager {
                 );
             }
         } catch (SQLException e) {
-            logger.error("The database could not retrieve transactions", e);
+            logger.error("The database could not retrieve purchases", e);
         }
         return purchases;
     }
