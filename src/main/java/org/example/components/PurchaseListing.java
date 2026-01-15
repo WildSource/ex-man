@@ -4,8 +4,6 @@ import lombok.Getter;
 import net.miginfocom.swing.MigLayout;
 import org.example.mediators.frame.FrameMediator;
 import org.example.mediators.frame.FrameMediatorEvent;
-import org.example.mediators.navigationbar.NavigationBarMediator;
-import org.example.mediators.navigationbar.NavigationEvent;
 import org.example.models.DatabaseManager;
 import org.example.models.Purchase;
 import org.slf4j.Logger;
@@ -24,7 +22,7 @@ public class PurchaseListing extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(PurchaseListing.class);
 
     private final Provider<FrameMediator> frameMediatorProvider;
-    private final NavigationBarMediator navigationBarMediator;
+    private final NavigationBar navigationBar;
 
     private static final DefaultListModel<Purchase> observableTransactions = new DefaultListModel<>();
     private final JList<Purchase> transactionsView;
@@ -35,10 +33,10 @@ public class PurchaseListing extends JPanel {
     @Inject
     public PurchaseListing(
             Provider<FrameMediator> frameMediatorProvider,
-            NavigationBarMediator navigationBarMediator
+            NavigationBar navigationBar
     ) {
         this.frameMediatorProvider = frameMediatorProvider;
-        this.navigationBarMediator = navigationBarMediator;
+        this.navigationBar = navigationBar;
 
         selectedPurchaseId = -1L;
 
@@ -111,6 +109,7 @@ public class PurchaseListing extends JPanel {
         logger.info("Purchase Selected with id: " + selectedPurchaseId);
 
         // Enable delete button
-        navigationBarMediator.notify(NavigationEvent.PURCHASE_SELECTED, null);
+        navigationBar.getEditPurchaseButton().setEnabled(true);
+        navigationBar.getDeleteSelectedPurchaseButton().setEnabled(true);
     }
 }

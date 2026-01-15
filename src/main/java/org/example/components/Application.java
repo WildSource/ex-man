@@ -2,7 +2,6 @@ package org.example.components;
 
 import net.miginfocom.swing.MigLayout;
 import org.example.mediators.frame.FrameMediator;
-import org.example.mediators.navigationbar.NavigationBarMediator;
 import org.example.mediators.purchaselisting.PurchaseListingMediator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +29,10 @@ public final class Application extends JFrame {
         this.panel = new JPanel(cardLayout);
         this.navbar = new NavigationBar(cardLayout, panel, purchaseListingMediatorProvider);
 
-        panel.add(new PurchaseListing(
+        panel.add(
+                new PurchaseListing(
                 frameMediatorProvider,
-                new NavigationBarMediator(navbar)
+                navbar
         ), "read");
         panel.add(new PurchaseForm(
                 navbar,

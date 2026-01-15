@@ -1,0 +1,24 @@
+
+Application JPanel
+Application Navbar
+
+FrameMediator Application
+
+JPanel CardLayout
+JPanel PurchaseMediator
+
+PurchaseMediator PurchaseListing
+PurchaseMediator PurchaseForm
+PurchaseMediator PurchaseEdit
+
+Navbar PurchaseMediator
+
+
+PurchaseListing FrameMediator
+PurchaseListing NavbarMediator
+
+PurchaseForm FrameMediator
+PurchaseForm NavbarMediator
+
+PurchaseEdit NavbarMediator
+
