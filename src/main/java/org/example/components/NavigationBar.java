@@ -1,14 +1,17 @@
 package org.example.components;
 
 import lombok.Getter;
+import org.example.mediators.purchaselisting.PurchaseListingMediator;
+import org.example.mediators.purchaselisting.PurchaseListingMediatorEvent;
 import org.example.models.DatabaseManager;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.swing.*;
 import java.awt.*;
 
-public final class NavigationBar extends JPanel {
-    @Getter
-    private static NavigationBar instance;
+public class NavigationBar extends JPanel {
+    private Provider<PurchaseListingMediator> purchaseListingMediatorProvider;
 
     private CardLayout cardLayout;
     private JPanel panel;
@@ -20,9 +23,15 @@ public final class NavigationBar extends JPanel {
     @Getter
     private JButton deleteSelectedPurchaseButton;
 
-    private NavigationBar(CardLayout cardLayout, JPanel panel) {
+    @Inject
+    public NavigationBar(
+            CardLayout cardLayout,
+            JPanel panel,
+            Provider<PurchaseListingMediator> purchaseListingMediatorProvider
+    ) {
         this.cardLayout = cardLayout;
         this.panel = panel;
+        this.purchaseListingMediatorProvider = purchaseListingMediatorProvider;
 
         this.addPurchaseButton = new JButton("Add Purchase");
         addPurchaseButton.addActionListener((_) -> showPurchaseForm());
@@ -41,13 +50,6 @@ public final class NavigationBar extends JPanel {
         add(deleteSelectedPurchaseButton);
 
         showPurchases();
-    }
-
-    public static NavigationBar getInstance(CardLayout cardLayout, JPanel panel) {
-        if (instance == null) {
-            instance = new NavigationBar(cardLayout, panel);
-        }
-        return instance;
     }
 
     public void showPurchases() {
@@ -84,7 +86,7 @@ public final class NavigationBar extends JPanel {
 
             @Override
             protected void done() {
-                //PurchaseListing.updateTransactionView();
+                purchaseListingMediatorProvider.get().notify(PurchaseListingMediatorEvent.UPDATE_LISTING, null);
             }
         };
 

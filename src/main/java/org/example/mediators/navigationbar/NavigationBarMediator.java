@@ -3,20 +3,14 @@ package org.example.mediators.navigationbar;
 import org.example.components.NavigationBar;
 import org.example.mediators.internal.Mediator;
 
-public final class NavigationBarMediator implements Mediator<NavigationEvent, Void> {
-    private static NavigationBarMediator instance;
+import javax.inject.Inject;
 
-    private static NavigationBar navbar;
+public class NavigationBarMediator implements Mediator<NavigationEvent, Void> {
+    private NavigationBar navbar;
 
-    private NavigationBarMediator() {
-        navbar = NavigationBar.getInstance();
-    }
-
-    public static NavigationBarMediator getInstance() {
-        if (instance == null) {
-            instance = new NavigationBarMediator();
-        }
-        return instance;
+    @Inject
+    public NavigationBarMediator(NavigationBar navbar) {
+        this.navbar = navbar;
     }
 
     @Override

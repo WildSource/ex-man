@@ -24,6 +24,7 @@ public class PurchaseListing extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(PurchaseListing.class);
 
     private final Provider<FrameMediator> frameMediatorProvider;
+    private final NavigationBarMediator navigationBarMediator;
 
     private static final DefaultListModel<Purchase> observableTransactions = new DefaultListModel<>();
     private final JList<Purchase> transactionsView;
@@ -32,8 +33,12 @@ public class PurchaseListing extends JPanel {
     private static Long selectedPurchaseId;
 
     @Inject
-    public PurchaseListing(Provider<FrameMediator> frameMediatorProvider) {
+    public PurchaseListing(
+            Provider<FrameMediator> frameMediatorProvider,
+            NavigationBarMediator navigationBarMediator
+    ) {
         this.frameMediatorProvider = frameMediatorProvider;
+        this.navigationBarMediator = navigationBarMediator;
 
         selectedPurchaseId = -1L;
 
@@ -106,6 +111,6 @@ public class PurchaseListing extends JPanel {
         logger.info("Purchase Selected with id: " + selectedPurchaseId);
 
         // Enable delete button
-        NavigationBarMediator.getInstance().notify(NavigationEvent.PURCHASE_SELECTED, null);
+        navigationBarMediator.notify(NavigationEvent.PURCHASE_SELECTED, null);
     }
 }
