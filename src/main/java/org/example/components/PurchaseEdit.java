@@ -133,8 +133,8 @@ public class PurchaseEdit extends JPanel {
                 purchaseDate.setDate(null);
                 purchaseDate.setText("");
                 purchaseSeller.setText("");
-                PurchaseListing.updateTransactionView();
-                Application.adjust();
+                //PurchaseListing.updateTransactionView();
+                // Add frame pack function through mediator
             }
         };
 

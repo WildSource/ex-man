@@ -2,11 +2,16 @@ package org.example.components;
 
 import com.github.lgooddatepicker.components.DatePicker;
 import net.miginfocom.swing.MigLayout;
+import org.example.mediators.frame.FrameMediator;
+import org.example.mediators.frame.FrameMediatorEvent;
+import org.example.mediators.purchaselisting.PurchaseListingMediator;
+import org.example.mediators.purchaselisting.PurchaseListingMediatorEvent;
 import org.example.models.DatabaseManager;
 import org.example.models.Purchase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Provider;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,6 +21,9 @@ import java.time.LocalDate;
 public class PurchaseForm extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(PurchaseForm.class);
 
+    private Provider<FrameMediator> frameMediatorProvider;
+    private Provider<PurchaseListingMediator> purchaseListingMediatorProvider;
+
     private NavigationBar navbar;
 
     private JTextField transactionThing;
@@ -24,8 +32,15 @@ public class PurchaseForm extends JPanel {
     private JTextField transactionDestinator;
     private JButton submit;
 
-    public PurchaseForm(NavigationBar navbar) {
+    public PurchaseForm(
+            NavigationBar navbar,
+            Provider<FrameMediator> frameMediatorProvider,
+            Provider<PurchaseListingMediator> purchaseListingMediatorProvider
+    ) {
         this.navbar = navbar;
+        this.frameMediatorProvider = frameMediatorProvider;
+        this.purchaseListingMediatorProvider = purchaseListingMediatorProvider;
+
         setLayout(new MigLayout(
                 "insets 20",
                 "[grow, fill][shrink]",
@@ -100,8 +115,8 @@ public class PurchaseForm extends JPanel {
                 transactionDate.setDate(null);
                 transactionDate.setText("");
                 transactionDestinator.setText("");
-                PurchaseListing.updateTransactionView();
-                Application.adjust();
+                purchaseListingMediatorProvider.get().notify(PurchaseListingMediatorEvent.UPDATE_LISTING, null);
+                frameMediatorProvider.get().notify(FrameMediatorEvent.UI_RESIZE, null);
             }
         };
 

@@ -84,7 +84,7 @@ public final class NavigationBar extends JPanel {
 
             @Override
             protected void done() {
-                PurchaseListing.updateTransactionView();
+                //PurchaseListing.updateTransactionView();
             }
         };
 

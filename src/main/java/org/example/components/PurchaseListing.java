@@ -2,6 +2,8 @@ package org.example.components;
 
 import lombok.Getter;
 import net.miginfocom.swing.MigLayout;
+import org.example.mediators.frame.FrameMediator;
+import org.example.mediators.frame.FrameMediatorEvent;
 import org.example.mediators.navigationbar.NavigationBarMediator;
 import org.example.mediators.navigationbar.NavigationEvent;
 import org.example.models.DatabaseManager;
@@ -9,6 +11,8 @@ import org.example.models.Purchase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
@@ -19,13 +23,18 @@ import java.util.concurrent.ExecutionException;
 public class PurchaseListing extends JPanel {
     private static final Logger logger = LoggerFactory.getLogger(PurchaseListing.class);
 
+    private final Provider<FrameMediator> frameMediatorProvider;
+
     private static final DefaultListModel<Purchase> observableTransactions = new DefaultListModel<>();
     private final JList<Purchase> transactionsView;
 
     @Getter
     private static Long selectedPurchaseId;
 
-    public PurchaseListing() {
+    @Inject
+    public PurchaseListing(Provider<FrameMediator> frameMediatorProvider) {
+        this.frameMediatorProvider = frameMediatorProvider;
+
         selectedPurchaseId = -1L;
 
         this.transactionsView = new JList<>();
@@ -44,7 +53,7 @@ public class PurchaseListing extends JPanel {
         setVisible(true);
     }
 
-    public static void updateTransactionView() {
+    public void updateTransactionView() {
         var sw = new SwingWorker<List<Purchase>, Void>() {
             @Override
             protected List<Purchase> doInBackground() {
@@ -64,7 +73,7 @@ public class PurchaseListing extends JPanel {
                         observableTransactions.clear();
                         purchases.forEach((observableTransactions::addElement));
                     }
-                    Application.adjust();
+                    frameMediatorProvider.get().notify(FrameMediatorEvent.UI_RESIZE, null);
                 } catch (InterruptedException e) {
                     logger.error("Worker thread got interrupted while querying for transactions", e);
                 } catch (ExecutionException e) {
@@ -93,6 +102,8 @@ public class PurchaseListing extends JPanel {
                 .getModel()
                 .getElementAt(transactionsView.getSelectedIndex())
                 .getId();
+
+        logger.info("Purchase Selected with id: " + selectedPurchaseId);
 
         // Enable delete button
         NavigationBarMediator.getInstance().notify(NavigationEvent.PURCHASE_SELECTED, null);
